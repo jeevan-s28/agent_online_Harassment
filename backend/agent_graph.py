@@ -23,6 +23,9 @@ def linguistic_analyst_node(state: AgentState):
     input_text = state["input_text"]
     prompt = f"""
     You are a Linguistic Analyst. Analyze the following text for tone, intent, and subtle nuances (sarcasm, slang, passive-aggression).
+    
+    **SDG 5 Focus**: Pay special attention to gender-based bias, misogynistic undertones, objectification, or gender stereotypes.
+    
     Text: "{input_text}"
     
     Output a brief analysis of how it was said and the contextual intent.
@@ -45,11 +48,11 @@ def policy_auditor_node(state: AgentState):
     input_text = state["input_text"]
     
     prompt = f"""
-    You are a Policy Auditor. Evaluate the text and the linguistic analysis against these community guidelines:
-    - Hate Speech
-    - Gender-based Harassment
-    - Incitement of Violence
-    - Cyberbullying
+    You are a Policy Auditor. Evaluate the text and the linguistic analysis against these community guidelines, with a strict focus on **SDG 5 (Gender Equality)**:
+    - **Gender-based Harassment**: Unwanted sexual advances, misogyny, or gender-based insults.
+    - **Hate Speech**: Attacks based on gender or sexual orientation.
+    - **Cyberbullying**: Targeted harassment.
+    - **Incitement of Violence**: Threats against women or girls.
     
     Text: "{input_text}"
     Linguistic Analysis: "{analysis}"
