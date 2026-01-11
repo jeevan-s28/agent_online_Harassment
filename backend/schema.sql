@@ -6,7 +6,9 @@ create table harassment_logs (
   category text not null,
   severity text not null,
   reasoning_chain jsonb not null,
-  suggested_action text not null
+  reasoning_chain jsonb not null,
+  suggested_action text not null,
+  source text default 'Manual'
 );
 
 -- Enable Row Level Security (RLS) if needed, or leave open for service role

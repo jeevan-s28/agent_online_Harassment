@@ -7,3 +7,4 @@ class AgentState(TypedDict):
     severity_score: Optional[str]
     final_decision: Optional[str]
     reasoning_history: List[dict]
+    source: Optional[str]

@@ -9,13 +9,14 @@ key: str = os.environ.get("SUPABASE_KEY", "")
 
 supabase: Client = create_client(url, key)
 
-def save_log(content: str, category: str, severity: str, reasoning_chain: list, suggested_action: str):
+def save_log(content: str, category: str, severity: str, reasoning_chain: list, suggested_action: str, source: str = "Manual"):
     data = {
         "content": content,
         "category": category,
         "severity": severity,
         "reasoning_chain": reasoning_chain,
-        "suggested_action": suggested_action
+        "suggested_action": suggested_action,
+        "source": source
     }
     try:
         response = supabase.table("harassment_logs").insert(data).execute()

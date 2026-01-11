@@ -46,15 +46,15 @@ def policy_auditor_node(state: AgentState):
     
     prompt = f"""
     You are a Policy Auditor. Evaluate the text and the linguistic analysis against these community guidelines:
-    - Hate Speech (SDG 10)
-    - Gender-based Harassment (SDG 5)
-    - Incitement of Violence (SDG 16)
+    - Hate Speech
+    - Gender-based Harassment
+    - Incitement of Violence
     - Cyberbullying
     
     Text: "{input_text}"
     Linguistic Analysis: "{analysis}"
     
-    List any policy violations. If none, say "None".
+    List any policy violations. If none, say "None". Do NOT include "(SDG X)" in the violation name.
     Start with "Thought: [Reasoning]" followed by "Violations: [List]".
     """
     response = llm.invoke([HumanMessage(content=prompt)])
@@ -75,6 +75,12 @@ def resolution_agent_node(state: AgentState):
     
     prompt = f"""
     You are a Resolution Agent. Based on the policy violations, assign a severity score (Low, Medium, High, Critical) and suggest a mitigation action (Ignore, Warn, Shadowban, Immediate Report).
+    
+    Guidelines for Action:
+    - Low Severity -> Ignore or Monitor
+    - Medium Severity -> Warn
+    - High Severity -> Shadowban
+    - Critical Severity -> Immediate Report
     
     Violations: {violations}
     
@@ -99,12 +105,14 @@ def resolution_agent_node(state: AgentState):
 def db_manager_node(state: AgentState):
     # Save to Supabase
     category = state["policy_violations"][0] if state["policy_violations"] else "Safe"
+    source = state.get("source", "Manual")
     save_log(
         content=state["input_text"],
         category=category,
         severity=state["severity_score"],
         reasoning_chain=state["reasoning_history"],
-        suggested_action=state["final_decision"]
+        suggested_action=state["final_decision"],
+        source=source
     )
     return {
         "reasoning_history": state["reasoning_history"] + [{"agent": "Database Manager", "thought": "Logging to Supabase", "output": "Saved"}]

@@ -21,6 +21,9 @@ function App() {
     const [loading, setLoading] = useState(false)
     const [result, setResult] = useState<AnalysisResult | null>(null)
     const [history, setHistory] = useState<any[]>([])
+    const [activeTab, setActiveTab] = useState<'manual' | 'instagram'>('manual')
+    const [instaUrl, setInstaUrl] = useState('')
+    const [importStatus, setImportStatus] = useState<string | null>(null)
 
     useEffect(() => {
         fetchHistory()
@@ -50,6 +53,26 @@ function App() {
         }
     }
 
+    const handleImport = async () => {
+        if (!instaUrl.trim()) return
+        setLoading(true)
+        setImportStatus(null)
+        try {
+            const res = await axios.post('/api/import-instagram', { url: instaUrl })
+            if (res.data.status === 'success') {
+                setImportStatus(`Successfully imported ${res.data.imported_count} comments!`)
+                fetchHistory()
+            } else {
+                setImportStatus(`Error: ${res.data.message}`)
+            }
+        } catch (error) {
+            console.error("Import failed", error)
+            setImportStatus("Failed to connect to server")
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <div className="min-h-screen bg-slate-950 text-slate-100 flex">
             {/* Sidebar History */}
@@ -63,7 +86,7 @@ function App() {
                                 <span className={item.category === 'Safe' ? 'text-green-400' : 'text-red-400'}>
                                     {item.category}
                                 </span>
-                                <span>{new Date(item.created_at).toLocaleDateString()}</span>
+                                <span>{item.source === 'Instagram' ? '📸' : '✍️'}</span>
                             </div>
                         </div>
                     ))}
@@ -76,27 +99,71 @@ function App() {
                     <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
                         Agentic Harassment Detection
                     </h1>
-                    <p className="text-slate-400 mt-2">Multi-Agent System aligned with UN SDG 16 & 5</p>
+                    <p className="text-slate-400 mt-2">Multi-Agent System</p>
                 </header>
 
                 {/* Input Area */}
                 <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg mb-8">
-                    <textarea
-                        className="w-full bg-slate-950 border border-slate-700 rounded-lg p-4 text-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition h-32 resize-none"
-                        placeholder="Paste text here to analyze..."
-                        value={inputText}
-                        onChange={(e) => setInputText(e.target.value)}
-                    />
-                    <div className="flex justify-end mt-4">
+                    <div className="flex gap-4 mb-4 border-b border-slate-800 pb-2">
                         <button
-                            onClick={handleAnalyze}
-                            disabled={loading || !inputText}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={() => setActiveTab('manual')}
+                            className={`pb-2 px-1 font-medium transition ${activeTab === 'manual' ? 'text-indigo-400 border-b-2 border-indigo-400' : 'text-slate-400 hover:text-slate-200'}`}
                         >
-                            {loading ? <Loader2 className="animate-spin w-4 h-4" /> : <ShieldCheck className="w-4 h-4" />}
-                            {loading ? 'Analyzing...' : 'Analyze Text'}
+                            Manual Input
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('instagram')}
+                            className={`pb-2 px-1 font-medium transition ${activeTab === 'instagram' ? 'text-pink-400 border-b-2 border-pink-400' : 'text-slate-400 hover:text-slate-200'}`}
+                        >
+                            Instagram Import
                         </button>
                     </div>
+
+                    {activeTab === 'manual' ? (
+                        <>
+                            <textarea
+                                className="w-full bg-slate-950 border border-slate-700 rounded-lg p-4 text-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition h-32 resize-none"
+                                placeholder="Paste text here to analyze..."
+                                value={inputText}
+                                onChange={(e) => setInputText(e.target.value)}
+                            />
+                            <div className="flex justify-end mt-4">
+                                <button
+                                    onClick={handleAnalyze}
+                                    disabled={loading || !inputText}
+                                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {loading ? <Loader2 className="animate-spin w-4 h-4" /> : <ShieldCheck className="w-4 h-4" />}
+                                    {loading ? 'Analyzing...' : 'Analyze Text'}
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    className="flex-1 bg-slate-950 border border-slate-700 rounded-lg p-3 text-slate-200 focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition"
+                                    placeholder="Paste Instagram Post URL (e.g., https://www.instagram.com/p/Cxyz...)"
+                                    value={instaUrl}
+                                    onChange={(e) => setInstaUrl(e.target.value)}
+                                />
+                                <button
+                                    onClick={handleImport}
+                                    disabled={loading || !instaUrl}
+                                    className="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg font-medium transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {loading ? <Loader2 className="animate-spin w-4 h-4" /> : <ShieldCheck className="w-4 h-4" />}
+                                    {loading ? 'Importing...' : 'Import Comments'}
+                                </button>
+                            </div>
+                            {importStatus && (
+                                <div className={`mt-4 p-3 rounded-lg text-sm ${importStatus.startsWith('Error') || importStatus.startsWith('Failed') ? 'bg-red-900/20 text-red-400' : 'bg-green-900/20 text-green-400'}`}>
+                                    {importStatus}
+                                </div>
+                            )}
+                        </>
+                    )}
                 </div>
 
                 {/* Results Dashboard */}
