@@ -39,11 +39,19 @@ function App() {
     const fetchHistory = async () => {
         try {
             const res = await axios.get('/api/history')
-            setHistory(res.data)
+
+            if (Array.isArray(res.data)) {
+                setHistory(res.data)
+            } else {
+                console.warn("History API did not return an array:", res.data)
+                setHistory([])
+            }
         } catch (error) {
             console.error("Failed to fetch history", error)
+            setHistory([])
         }
     }
+
 
     const handleAnalyze = async () => {
         if (!inputText.trim()) return
@@ -52,7 +60,14 @@ function App() {
         setError(null)
         try {
             const res = await axios.post('/api/analyze', { text: inputText })
-            setResult(res.data)
+            const safeResult = {
+                ...res.data,
+                reasoning_chain: Array.isArray(res.data.reasoning_chain)
+                    ? res.data.reasoning_chain
+                    : []
+            }
+
+            setResult(safeResult)
             fetchHistory()
         } catch (err: any) {
             console.error("Analysis failed", err)
@@ -78,17 +93,19 @@ function App() {
         // Map history item to AnalysisResult structure
         const mappedResult: AnalysisResult = {
             status: item.category === 'Safe' || item.category === 'None' ? 'safe' : 'harmful',
-            category: item.category,
-            severity: item.severity,
-            reasoning_chain: item.reasoning_chain,
-            suggested_action: item.suggested_action
+            category: item.category ?? 'None',
+            severity: item.severity ?? 'Low',
+            reasoning_chain: Array.isArray(item.reasoning_chain)
+                ? item.reasoning_chain
+                : [],
+            suggested_action: item.suggested_action ?? 'No action required'
         }
 
         setResult(mappedResult)
         setError(null)
 
         // Populate input
-        setInputText(item.content)
+        setInputText(item.content ?? '')
     }
 
     return (
@@ -97,7 +114,7 @@ function App() {
             <aside className="w-64 bg-slate-900 border-r border-slate-800 p-4 hidden md:block overflow-y-auto h-screen sticky top-0">
                 <h2 className="text-xl font-bold mb-4 text-indigo-400">History</h2>
                 <div className="space-y-3">
-                    {history.map((item) => (
+                    {Array.isArray(history) && history.map((item) => (
                         <div
                             key={item.id}
                             onClick={() => handleHistoryClick(item)}
@@ -198,7 +215,7 @@ function App() {
                                     </h3>
                                 </div>
                                 <div className="divide-y divide-slate-800">
-                                    {result.reasoning_chain.map((step, idx) => (
+                                    {Array.isArray(result.reasoning_chain) && result.reasoning_chain.map((step, idx) => (
                                         <div key={idx} className="p-4 hover:bg-slate-800/50 transition">
                                             <div className="flex items-center justify-between mb-2">
                                                 <span className="text-xs font-bold uppercase tracking-wider text-indigo-400 bg-indigo-950/30 px-2 py-1 rounded">
