@@ -1,6 +1,10 @@
 # Agentic Harassment Detection System (HarassmentShield)
 
+<<<<<<< HEAD
 > **Aligning with SDG 5 (Gender Equality)**
+=======
+> **Aligning with SDG 5 (Gender Equality) **
+>>>>>>> 4e133ea31eb2b7172cae8ac4796b6e0ebbda5235
 
 ## 🚀 Overview
 **HarassmentShield** is an advanced, Multi-Agent AI system designed to detect, classify, and mitigate online harassment with a specific focus on gender-based violence. Unlike traditional keyword filters, this system uses a team of specialized AI agents to understand context, nuance, sarcasm, and intent.
@@ -127,8 +131,6 @@ SUPABASE_KEY=your_supabase_anon_key
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `POST` | `/api/analyze` | Analyzes a single text string. |
-| `POST` | `/api/import-instagram` | Fetches and analyzes comments from an Instagram URL. |
 | `GET` | `/api/history` | Retrieves the history of analyzed logs. |
 
-## 📄 License
-This project is licensed under the MIT License.
+

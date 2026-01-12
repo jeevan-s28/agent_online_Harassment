@@ -10,18 +10,13 @@ load_dotenv()
 
 app = FastAPI()
 
-origins = [
-    "http://localhost",
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://localhost:3000",
-    "https://agent-8om44jaoe-jeevan-ss-projects-98df6ea7.vercel.app",
-    "https://agent-online-harassment.vercel.app", # Adding main domain if applicable
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=[
+        "https://agent-8om44jaoe-jeevan-ss-projects-98df6ea7.vercel.app",
+        "http://localhost:5173",
+        "http://localhost:3000"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
