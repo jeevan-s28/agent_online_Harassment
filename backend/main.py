@@ -13,9 +13,9 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://agent-8om44jaoe-jeevan-ss-projects-98df6ea7.vercel.app",
+        "https://agent-orpin.vercel.app",
         "http://localhost:5173",
-        "http://localhost:3000"
+        "http://localhost:3000",
     ],
     allow_credentials=True,
     allow_methods=["*"],
