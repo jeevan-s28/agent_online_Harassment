@@ -3,11 +3,12 @@ import axios from 'axios'
 import { AlertTriangle, CheckCircle, Loader2, ShieldAlert, ShieldCheck } from 'lucide-react'
 
 // Configure API Base URL
-const API_BASE_URL = window.location.hostname === 'localhost'
-    ? 'http://localhost:8000'
-    : 'https://agent-online-harassment-backend.onrender.com';
+// const API_BASE_URL = window.location.hostname === 'localhost'
+//     ? 'http://localhost:8000'
+//     : 'https://agent-online-harassment-backend.onrender.com';
 
-axios.defaults.baseURL = API_BASE_URL;
+// axios.defaults.baseURL = API_BASE_URL;
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 
 interface ReasoningStep {
     agent: string
