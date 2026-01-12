@@ -56,13 +56,17 @@ async def import_instagram(request: ImportRequest):
     insta_user = os.environ.get("INSTAGRAM_USER")
     insta_pass = os.environ.get("INSTAGRAM_PASSWORD")
     
+    login_success = False
     if insta_user and insta_pass:
         try:
             L.login(insta_user, insta_pass)
+            login_success = True
         except Exception as e:
-            return {"status": "error", "message": f"Instagram Login Failed: {str(e)}"}
-    else:
-        # Try to load session if available, or proceed anonymously (which often fails for comments)
+            print(f"Warning: Instagram Login Failed: {str(e)}")
+            # Continue anonymously
+    
+    if not login_success:
+         # Try to load session if available
         try:
             L.load_session_from_file(insta_user) if insta_user else None
         except:
@@ -83,7 +87,7 @@ async def import_instagram(request: ImportRequest):
         comments = []
         for comment in post.get_comments():
             comments.append(comment.text)
-            if len(comments) >= 10:  # Limit to 10 for demo speed
+            if len(comments) >= 7:  # Limit to 7 for demo speed
                 break
         
         results = []

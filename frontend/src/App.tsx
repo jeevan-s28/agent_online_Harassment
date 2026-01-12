@@ -73,20 +73,46 @@ function App() {
         }
     }
 
+    const handleHistoryClick = (item: any) => {
+        // Map history item to AnalysisResult structure
+        const mappedResult: AnalysisResult = {
+            status: item.category === 'Safe' || item.category === 'None' ? 'safe' : 'harmful',
+            category: item.category,
+            severity: item.severity,
+            reasoning_chain: item.reasoning_chain,
+            suggested_action: item.suggested_action
+        }
+
+        setResult(mappedResult)
+
+        // Populate input based on source
+        if (item.source === 'Instagram') {
+            setActiveTab('instagram')
+            setInstaUrl(item.content) // Assuming content stores the URL or text for insta
+        } else {
+            setActiveTab('manual')
+            setInputText(item.content)
+        }
+    }
+
     return (
         <div className="min-h-screen bg-slate-950 text-slate-100 flex">
             {/* Sidebar History */}
-            <aside className="w-64 bg-slate-900 border-r border-slate-800 p-4 hidden md:block">
+            <aside className="w-64 bg-slate-900 border-r border-slate-800 p-4 hidden md:block overflow-y-auto h-screen sticky top-0">
                 <h2 className="text-xl font-bold mb-4 text-indigo-400">History</h2>
                 <div className="space-y-3">
                     {history.map((item) => (
-                        <div key={item.id} className="p-3 bg-slate-800 rounded-lg text-sm hover:bg-slate-700 transition cursor-pointer">
-                            <p className="font-medium truncate">{item.content}</p>
+                        <div
+                            key={item.id}
+                            onClick={() => handleHistoryClick(item)}
+                            className="p-3 bg-slate-800 rounded-lg text-sm hover:bg-slate-700 transition cursor-pointer border border-transparent hover:border-indigo-500/30"
+                        >
+                            <p className="font-medium truncate text-slate-200">{item.content}</p>
                             <div className="flex justify-between mt-2 text-xs text-slate-400">
-                                <span className={item.category === 'Safe' ? 'text-green-400' : 'text-red-400'}>
+                                <span className={`px-1.5 py-0.5 rounded ${item.category === 'Safe' ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'}`}>
                                     {item.category}
                                 </span>
-                                <span>{item.source === 'Instagram' ? '📸' : '✍️'}</span>
+                                <span title={item.source}>{item.source === 'Instagram' ? '📸' : '✍️'}</span>
                             </div>
                         </div>
                     ))}
