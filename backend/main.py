@@ -13,7 +13,8 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://agent-orpin.vercel.app",
+        "https://a1-k6kvoecmk-jeevan-ss-projects-98df6ea7.vercel.app",
+        "https://agent-online-harassment.vercel.app"
         "http://localhost:5173",
         "http://localhost:3000",
     ],
