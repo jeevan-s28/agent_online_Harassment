@@ -6,7 +6,7 @@ create table harassment_logs (
   category text not null,
   severity text not null,
   reasoning_chain jsonb not null,
-  reasoning_chain jsonb not null,
+
   suggested_action text not null,
   source text default 'Manual'
 );

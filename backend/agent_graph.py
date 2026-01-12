@@ -108,7 +108,7 @@ def resolution_agent_node(state: AgentState):
 def db_manager_node(state: AgentState):
     # Save to Supabase
     category = state["policy_violations"][0] if state["policy_violations"] else "Safe"
-    source = state.get("source", "Manual")
+    source = "Manual"
     save_log(
         content=state["input_text"],
         category=category,
