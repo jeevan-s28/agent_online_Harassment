@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+
+// Set base URL for production
+if (!import.meta.env.DEV) {
+    axios.defaults.baseURL = 'https://agent-online-harassment-backend.onrender.com'
+}
 import { AlertTriangle, CheckCircle, Loader2, ShieldAlert, ShieldCheck } from 'lucide-react'
 
 interface ReasoningStep {
