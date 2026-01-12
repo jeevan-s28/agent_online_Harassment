@@ -1,6 +1,6 @@
 # Agentic Harassment Detection System (HarassmentShield)
 
-> **Aligning with SDG 5 (Gender Equality) & SDG 16 (Peace, Justice, and Strong Institutions)**
+> **Aligning with SDG 5 (Gender Equality)**
 
 ## 🚀 Overview
 **HarassmentShield** is an advanced, Multi-Agent AI system designed to detect, classify, and mitigate online harassment with a specific focus on gender-based violence. Unlike traditional keyword filters, this system uses a team of specialized AI agents to understand context, nuance, sarcasm, and intent.
