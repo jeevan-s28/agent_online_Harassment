@@ -127,7 +127,6 @@ SUPABASE_KEY=your_supabase_anon_key
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `POST` | `/api/analyze` | Analyzes a single text string. |
-| `POST` | `/api/import-instagram` | Fetches and analyzes comments from an Instagram URL. |
 | `GET` | `/api/history` | Retrieves the history of analyzed logs. |
 
 
